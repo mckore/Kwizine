@@ -7,6 +7,7 @@ from dbsettings import DB_COLLECTION
 
 RESULTS_PER_PAGE = 25
 
+# change references to entities
 
 router = APIRouter()
 
