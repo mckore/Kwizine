@@ -1,6 +1,6 @@
 import logo from './assets/kwizinebkg.jpg';
 import Layout from './components/Layout';
-import './App.css';
+import Card from './components/Card';
 
 function App() {
   return (
@@ -17,7 +17,6 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
         </a>
       </header>
     </div>
