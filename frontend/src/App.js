@@ -1,13 +1,15 @@
-import logo from './logo.svg';
+import logo from './assets/kwizinebkg.jpg';
+import Layout from './components/Layout';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
+    <Layout>
+      <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Kwizine - A recipe sharing app
         </p>
         <a
           className="App-link"
@@ -19,6 +21,8 @@ function App() {
         </a>
       </header>
     </div>
+    </Layout>
+    
   );
 }
 
