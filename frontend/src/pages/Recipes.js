@@ -4,8 +4,6 @@ const Recipes = () => {
     <div>
       <h1>Recipes</h1>
 
-      <RecipesList />
-
     </div>
   )
 
