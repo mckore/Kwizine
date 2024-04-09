@@ -11,13 +11,6 @@ function App() {
         <p>
           Kwizine - A recipe sharing app
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-        </a>
       </header>
     </div>
     </Layout>
