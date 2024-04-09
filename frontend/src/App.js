@@ -1,13 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from './assets/kwizinebkg.jpg';
+import Layout from './components/Layout';
+import Card from './components/Card';
 
 function App() {
   return (
-    <div className="App">
+    <Layout>
+      <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Kwizine - A recipe sharing app
         </p>
         <a
           className="App-link"
@@ -15,10 +17,11 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
         </a>
       </header>
     </div>
+    </Layout>
+    
   );
 }
 
