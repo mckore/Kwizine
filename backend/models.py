@@ -35,24 +35,21 @@ class PyObjectId(ObjectId):
         return ObjectId(value)
 
 
-
 class MongoBaseModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
 
     class Config:
         json_encoders = {ObjectId: str}
 
-class IngredientBase(TypedDict, total=False):
-    ingredients: Optional[str]
     
-
 class RecipeBase(MongoBaseModel):
     title: str = Field(..., min_length=3)
-    ingredients: IngredientBase
+    ingredients: Dict
 
 
 class RecipeUpdate(MongoBaseModel):
-    ingredients: Optional[str,int] = None
+    ingredients: Optional[str] = None
+    cuisine_origin: Optional[str] = None
 
 class MorceauDB(RecipeBase):
     pass
