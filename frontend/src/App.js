@@ -9,7 +9,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Kwizine - A recipe sharing app
+          Morceau - new name for budding idea
         </p>
       </header>
     </div>
