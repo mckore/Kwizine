@@ -1,10 +1,13 @@
-from pydantic import BaseModel, Field, EmailStr, validator, GetJsonSchemaHandler, GetCoreSchemaHandler, ConfigDict
+from pydantic import BaseModel, Field, EmailStr, validator, GetJsonSchemaHandler, GetCoreSchemaHandler, ConfigDict, TypeAdapter
 from typing import Annotated, Any, Callable
 from bson import ObjectId
 from fastapi.encoders import jsonable_encoder
 from pydantic_core import core_schema
 from typing import Any, Dict, Optional
 from pydantic.json_schema import JsonSchemaValue
+from typing_extensions import TypedDict
+
+
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -39,17 +42,19 @@ class MongoBaseModel(BaseModel):
     class Config:
         json_encoders = {ObjectId: str}
 
-class ItemBase(MongoBaseModel):
-    brand: str = Field(..., min_length=3)
-    size: int = Field()
-    year: int = Field(gt=1990, lt=2050)
-    style: str = Field(...,min_length=3)
-    apparel_type: str = Field(..., min_length=3)
-    price: int = Field(gt=0)
+class IngredientBase(TypedDict, total=False):
+    ingredients: Optional[str]
+    
 
-class ItemUpdate(MongoBaseModel):
-    price: Optional[int] = None
-class HauteDB(ItemBase):
+class RecipeBase(MongoBaseModel):
+    title: str = Field(..., min_length=3)
+    ingredients: IngredientBase
+
+
+class RecipeUpdate(MongoBaseModel):
+    ingredients: Optional[str,int] = None
+
+class MorceauDB(RecipeBase):
     pass
 
 # item = {"brand": "Longchamp", "size": 32, "year": 2024, "style": "portefeuille", "apparel_type": "handbag", "price": 700}

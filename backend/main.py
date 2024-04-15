@@ -4,7 +4,7 @@ from fastapi import FastAPI, APIRouter, Request, Body, status
 from routers.items import router as items_router
 
 app = FastAPI()
-app.include_router(items_router, prefix="/items", tags=["items"])
+app.include_router(items_router, prefix="/recipes", tags=["recipes"])
 
 @app.on_event("startup")
 
