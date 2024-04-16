@@ -1,9 +1,9 @@
-from pydantic import BaseModel, Field, EmailStr, validator, GetJsonSchemaHandler, GetCoreSchemaHandler, ConfigDict, TypeAdapter
+from pydantic import BaseModel, Field, EmailStr, validator, GetJsonSchemaHandler, GetCoreSchemaHandler, ConfigDict, TypeAdapter, RootModel
 from typing import Annotated, Any, Callable
 from bson import ObjectId
 from fastapi.encoders import jsonable_encoder
 from pydantic_core import core_schema
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 from pydantic.json_schema import JsonSchemaValue
 from typing_extensions import TypedDict, Literal
 
@@ -47,18 +47,19 @@ class IngredientBase(BaseModel):
     temperature: List[str]
     subtype: List[str]
 
-class IngredientAttributes(BaseModel):
-    __root__: Optional[Dict[str, IngredientBase]]
+class IngredientAttributes(RootModel):
+    root: Optional[Dict[str, IngredientBase]]
 
 class RecipeBase(MongoBaseModel):
     title: str = Field(..., min_length=3)
-    ingredients: Optional[IngredientAttributes]
-    cuisine_origin: Optional[str]
-    cuisine_profile: List[Literal['sweet', 'sour', 'salty', 'bitter', 'umami', 'savory']]
+    ingredients: Optional[IngredientAttributes] = None
+    cuisine_origin: Optional[str] = None
+    cuisine_profile: Optional[List[Literal["sweet", "savory", "sour", "bitter", "umami"]]] = None
 
 class RecipeUpdate(MongoBaseModel):
     ingredients: Optional[str] = None
     cuisine_origin: Optional[str] = None
+    cuisine_profile: Optional[List[str]] = None
 
 class MorceauDB(RecipeBase):
     pass
