@@ -1,7 +1,6 @@
-imoprt Layout from "../../components/Layout";
-import { useEffect } from "react";
-import Card from "../../components/Card";
 import Layout from "../components/Layout";
+import Card from "../components/Card";
+import {useState, useEffect } from "react";
 
 const Recipes = () => {
   const [recipes, setRecipes] = useState([])
@@ -28,6 +27,7 @@ const Recipes = () => {
         <label htmlFor="recipes">Choose a Recipe: </label>
         <select name="recipes" id="recipes" onChange={handleChangeTitle}>
           <option value="">All Recipes</option>
+          <option value="">Chantilly Marscapone Vanille</option> 
           </select>
           </div>
           <div>

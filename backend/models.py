@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from pydantic_core import core_schema
 from typing import Any, Dict, Optional
 from pydantic.json_schema import JsonSchemaValue
-from typing_extensions import TypedDict
+from typing_extensions import TypedDict, Literal
 
 
 
@@ -41,11 +41,20 @@ class MongoBaseModel(BaseModel):
     class Config:
         json_encoders = {ObjectId: str}
 
-    
+class IngredientBase(BaseModel):
+    unit: str
+    size: int
+    temperature: List[str]
+    subtype: List[str]
+
+class IngredientAttributes(BaseModel):
+    __root__: Optional[Dict[str, IngredientBase]]
+
 class RecipeBase(MongoBaseModel):
     title: str = Field(..., min_length=3)
-    ingredients: Dict
-
+    ingredients: Optional[IngredientAttributes]
+    cuisine_origin: Optional[str]
+    cuisine_profile: List[Literal['sweet', 'sour', 'salty', 'bitter', 'umami', 'savory']]
 
 class RecipeUpdate(MongoBaseModel):
     ingredients: Optional[str] = None

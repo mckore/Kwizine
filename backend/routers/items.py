@@ -14,11 +14,7 @@ router = APIRouter()
 @router.get("/", response_description="List all items")
 async def list_items(request:Request, title:Optional[str]=None, page:int=1)-> List[MorceauDB]:
     skip = (page-1)*RESULTS_PER_PAGE
-    query = {}
-    if title:
-        query["title"] = title
-
-    full_query = request.app.mongodb[DB_COLLECTION].find(query).sort("_id", 1).skip(skip).limit(RESULTS_PER_PAGE)
+    full_query = request.app.mongodb[DB_COLLECTION].find().sort("_id", 1).skip(skip).limit(RESULTS_PER_PAGE)
     results = [MorceauDB(**raw_item) async for raw_item in full_query]
     return results
 
