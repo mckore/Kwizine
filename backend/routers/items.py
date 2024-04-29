@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, Body, status, HTTPException, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from bson import ObjectId
 from models import RecipeBase, MorceauDB, RecipeUpdate
 from typing import Dict, Optional, List
 from dbsettings import DB_COLLECTION
@@ -35,14 +36,20 @@ async def create_item(request: Request, item: RecipeBase = Body(...)):
 
 @router.get("/{id}", response_description="Get an item by id")
 async def show_item_id(id:str, request: Request):
-    if(item:= await request.app.mongodb[DB_COLLECTION].find_one({"_id": id})) is not None:
+    if(item:= await request.app.mongodb[DB_COLLECTION].find_one({"_id": ObjectId(id)})) is not None:
+        return MorceauDB(**item)
+    raise HTTPException(status_code=404, detail=f"Item {id} not found")
+
+@router.get("/{title})", response_description="Get an item by id")
+async def show_item_id(title:str, request: Request):
+    if(item:= await request.app.mongodb[DB_COLLECTION].find_one({"title": title})) is not None:
         return MorceauDB(**item)
     raise HTTPException(status_code=404, detail=f"Item {id} not found")
 
 @router.patch("/{id}", response_description="Update an item by id")
 async def update_item(request: Request, id:str, item: RecipeUpdate = Body(...)):
     await request.app.mongodb[DB_COLLECTION].update_one({"_id": id},{"$set": item.model_dump(exclude_unset=True)})
-    if (item:= await request.app.mongodb[DB_COLLECTION].find_one({"_id": id})) is not None:
+    if (item:= await request.app.mongodb[DB_COLLECTION].find_one({"_id": ObjectId(id)})) is not None:
         return MorceauDB(**item)
     raise HTTPException(status_code=404, detail=f"Item {id} not found")
 
