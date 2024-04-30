@@ -2,9 +2,13 @@ from fastapi import APIRouter, Request, Body, status, HTTPException, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from bson import ObjectId
-from models import RecipeBase, MorceauDB, RecipeUpdate
+from backend.settings.models import RecipeBase, MorceauDB, RecipeUpdate
 from typing import Dict, Optional, List
-from dbsettings import DB_COLLECTION
+from backend.settings.dbsettings import DB_COLLECTION
+import logging
+from backend.settings.services import EchoService
+
+logger = logging.getLogger(__name__)
 
 RESULTS_PER_PAGE = 25
 
@@ -37,6 +41,7 @@ async def create_item(request: Request, item: RecipeBase = Body(...)):
 @router.get("/{id}", response_description="Get an item by id")
 async def show_item_id(id:str, request: Request):
     if(item:= await request.app.mongodb[DB_COLLECTION].find_one({"_id": ObjectId(id)})) is not None:
+        logger.info(f"request / endpoint!")
         return MorceauDB(**item)
     raise HTTPException(status_code=404, detail=f"Item {id} not found")
 
