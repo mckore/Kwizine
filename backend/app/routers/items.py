@@ -5,10 +5,7 @@ from bson import ObjectId
 from backend.settings.models import RecipeBase, MorceauDB, RecipeUpdate
 from typing import Dict, Optional, List
 from backend.settings.dbsettings import DB_COLLECTION
-import logging
-from backend.settings.services import EchoService
-
-logger = logging.getLogger(__name__)
+from loguru import logger
 
 RESULTS_PER_PAGE = 25
 
