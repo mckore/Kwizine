@@ -50,10 +50,13 @@ async def create_item(request: Request, item: RecipeBase = Body(...)):
 
 @router.get("/{id}", response_description="Get an item by id")
 async def show_item_id(id:str, request: Request):
-    if(item:= await request.app.mongodb[DB_COLLECTION].find_one({"_id": ObjectId(id)})) is not None:
-        logger.info(f"request / endpoint!")
-        return MorceauDB(**item)
-    raise HTTPException(status_code=404, detail=f"Item {id} not found")
+    try:
+        if(item:= await request.app.mongodb[DB_COLLECTION].find_one({"_id": ObjectId(id)})) is not None:
+            logger.info(f"request for {id}!")
+            return MorceauDB(**item)
+    except Exception as e:
+        logger.exception(f"Error getting item {id}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Error getting item {id}") from e
 
 @router.get("/{title})", response_description="Get an item by id")
 async def show_item_id(title:str, request: Request):
