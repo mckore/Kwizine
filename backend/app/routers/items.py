@@ -7,33 +7,46 @@ from typing import Dict, Optional, List
 from backend.settings.dbsettings import DB_COLLECTION
 from loguru import logger
 
-RESULTS_PER_PAGE = 25
 
+RESULTS_PER_PAGE = 25
+logger.info("Loading router...")
 # change references to entities
 
 router = APIRouter()
 
 @router.get("/", response_description="List all items")
 async def list_items(request:Request, title:Optional[str]=None, page:int=1)-> List[MorceauDB]:
-    skip = (page-1)*RESULTS_PER_PAGE
-    full_query = request.app.mongodb[DB_COLLECTION].find().sort("_id", 1).skip(skip).limit(RESULTS_PER_PAGE)
-    results = [MorceauDB(**raw_item) async for raw_item in full_query]
-    return results
+    try:
+        skip = (page-1)*RESULTS_PER_PAGE
+        full_query = request.app.mongodb[DB_COLLECTION].find().sort("_id", 1).skip(skip).limit(RESULTS_PER_PAGE)
+        results = [MorceauDB(**raw_item) async for raw_item in full_query]
+        return results
+    except Exception as e:
+        logger.exception("Error listing items", title, page)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error listing items") from e
 
 @router.get("/all", response_description="List all items")
 async def list_items(request:Request)-> List[MorceauDB]:
-    full_query = request.app.mongodb[DB_COLLECTION].find().sort("_id", 1)
-    results = [MorceauDB(**raw_item) async for raw_item in full_query]
-    return results
+    try:
+        full_query = request.app.mongodb[DB_COLLECTION].find().sort("_id", 1)
+        results = [MorceauDB(**raw_item) async for raw_item in full_query]
+        return results
+    except Exception as e:
+        logger.exception("Error listing items")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error listing items") from e
 
 @router.post("/", response_description="Create new item")
 async def create_item(request: Request, item: RecipeBase = Body(...)):
-    item = jsonable_encoder(item)
-    new_item = await request.app.mongodb[DB_COLLECTION].insert_one(item)
-    created_item = await request.app.mongodb[DB_COLLECTION].find_one(
+    try:
+        item = jsonable_encoder(item)
+        new_item = await request.app.mongodb[DB_COLLECTION].insert_one(item)
+        created_item = await request.app.mongodb[DB_COLLECTION].find_one(
         {"_id": new_item.inserted_id}
-    )
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_item)
+        )
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_item)
+    except Exception as e:
+        logger.exception("Error creating item", item)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error creating item") from e
 
 @router.get("/{id}", response_description="Get an item by id")
 async def show_item_id(id:str, request: Request):
